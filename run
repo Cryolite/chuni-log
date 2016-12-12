@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+this_dir=`(cd \`dirname "$0"\`; pwd)`
+PS4='+$0:$LINENO: '
+set -ex
+
+cd "$this_dir"
+python scraper/main.py
+python recoder/recoder.py
