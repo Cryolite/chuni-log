@@ -10,7 +10,7 @@ catch ()
         exit 1
     fi
     # https://github.com/seleniumhq/selenium/issues/2852
-    kill -TERM $selenium_server_pid
+    kill -TERM $1
     wait
 }
 
