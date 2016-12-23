@@ -4,6 +4,30 @@ this_dir=`(cd \`dirname "$0"\`; pwd)`
 PS4='+$0:$LINENO: '
 set -ex
 
-cd "$this_dir"
-python scraper/main.py
-python recoder/recoder.py
+catch ()
+{
+    if [ `lsof -i :4444 | grep -F 'LISTEN' | tr -s ' ' | cut -d ' ' -f 2` != $1 ]; then
+        exit 1
+    fi
+    # https://github.com/seleniumhq/selenium/issues/2852
+    kill -TERM $selenium_server_pid
+    wait
+}
+
+finalize ()
+{
+    rm -f data.json
+    catch $1
+    rm selenium-server.log
+}
+
+(
+    cd "$this_dir"
+    java -jar selenium-server-standalone-3.0.1.jar >selenium-server.log 2>&1 &
+    selenium_server_pid=$!
+    sleep 10
+    trap 'catch $selenium_server_pid' ERR SIGTERM SIGINT SIGHUP
+    trap 'finalize $selenium_server_pid' EXIT RETURN
+    python src/scraper.py --verbose
+    python recoder/recoder.py
+)
