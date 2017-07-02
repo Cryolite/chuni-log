@@ -6,7 +6,7 @@ set -ex
 
 catch ()
 {
-    if [ `lsof -i :4444 | grep -F 'LISTEN' | tr -s ' ' | cut -d ' ' -f 2` != $1 ]; then
+    if [ "`lsof -i :4444 | grep -F 'LISTEN' | tr -s ' ' | cut -d ' ' -f 2`" != $1 ]; then
         exit 1
     fi
     # https://github.com/seleniumhq/selenium/issues/2852
