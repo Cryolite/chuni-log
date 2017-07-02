@@ -252,6 +252,7 @@ def selectAime(driver):
     if FLAGS.verbose:
         print('Aime の選択を実行します。')
 
+    waitForVisibilityOfElementById(driver, u'userInfo_result')
     user_info_result = findUniqueElementById(driver, u'userInfo_result')
 
     # Aime が複数登録されている場合、
@@ -773,6 +774,13 @@ def main(argv):
         with open('data.json', 'w') as f:
             json.dump({'tracks': tracks, 'user_data': user_data},
                       f, indent=2, separators=(',', ': '))
+    except:
+        time.sleep(3.0)
+        attention_elements = driver.find_elements_by_class_name(u'riyouken_attention')
+        if len(attention_elements) == 1:
+            print(attention_elements[0].text, file=sys.stderr)
+            raise RuntimeError
+        raise
     finally:
         driver.quit()
 
