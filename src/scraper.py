@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import sys
 import re
 import time
@@ -188,7 +189,7 @@ def waitForVisibilityOfElementById(driver, id, timeout=XHR_TIMEOUT):
 
 def logIn(driver):
     if FLAGS.verbose:
-        print 'CHUNITHM-NET へのログインを開始します。'
+        print('CHUNITHM-NET へのログインを開始します。')
 
     driver.get(u'https://chunithm-net.com/mobile/')
 
@@ -212,10 +213,10 @@ def logIn(driver):
         storeSegaIdAndPassword(sega_id, password)
     elif current_url == u'https://chunithm-net.com/mobile/Error.html':
         # TODO: このページにエラー番号が出力されているので取得。
-        print 'CHUNITHM-NET へのログインに失敗しました。'
+        print('CHUNITHM-NET へのログインに失敗しました。')
         if is_credentials_stored:
-            print 'SEGA ID とパスワードを再入力するには'\
-                  ' --force_interactive オプションを指定してください。'
+            print('SEGA ID とパスワードを再入力するには'\
+                  ' --force_interactive オプションを指定してください。')
         return False
     else:
         raise PageTransitionFailure(
@@ -249,7 +250,7 @@ def waitUntil(condition_callback, timeout, polling_interval=0.5):
 
 def selectAime(driver):
     if FLAGS.verbose:
-        print 'Aime の選択を実行します。'
+        print('Aime の選択を実行します。')
 
     user_info_result = findUniqueElementById(driver, u'userInfo_result')
 
@@ -343,21 +344,21 @@ def selectAime(driver):
 
     if num_aimes >= 2:
         print
-        print '複数のAimeが登録されています。ログインするAimeを選んでください。'
+        print('複数のAimeが登録されています。ログインするAimeを選んでください。')
         for i, reborn, lv, name, ratings, max_rating in\
                 zip(range(num_aimes), reborns, lvs, names, ratings, max_ratings):
             text = u'{0}: '.format(unicode(i + 1))
             text += u'Lv.' + (u'' if not reborn else reborn + u'-') + lv.rjust(2)
             text += u' ' + name
             text += u' (RATING: ' + ratings.rjust(5) + u' / ' + max_rating.rjust(5) + u')\n'
-            print text.encode('UTF-8')
+            print(text.encode('UTF-8'))
         while True:
             aime_index = raw_input('番号: ')
             if re.compile('[1-{0}]$'.format(num_aimes)).match(aime_index):
                 aime_index = int(aime_index)
                 if 1 <= aime_index and aime_index <= num_aimes:
                     break
-            print '1から{0}までの番号を入力してください。'.format(num_aimes)
+            print('1から{0}までの番号を入力してください。'.format(num_aimes))
     else:
         aime_index = 1
 
@@ -369,7 +370,7 @@ def selectAime(driver):
 
 def getAimeId(driver):
     if FLAGS.verbose:
-        print '選択された Aime の ID を取得します。'
+        print('選択された Aime の ID を取得します。')
 
     # CHUNITHM-NET において複数の Aime を識別するおそらく唯一の方法は
     # フレンドコードの取得である。この関数は、フレンドコードを取得し、
@@ -442,8 +443,8 @@ def getTracks(driver):
     num_tracks = len(track_summaries)
 
     if FLAGS.verbose:
-        print 'プレイ履歴の曲数: {0}'.format(num_tracks)
-        print '各トラックの詳細を抽出します。'
+        print('プレイ履歴の曲数: {0}'.format(num_tracks))
+        print('各トラックの詳細を抽出します。')
 
     tracks = []
     for i in range(num_tracks):
@@ -628,8 +629,8 @@ def getTracks(driver):
         track['flick'] = float(flick) / 100
 
         if FLAGS.verbose:
-            print u'  {0} {1}'.format(track['date'], track['title'])\
-                              .encode('UTF-8')
+            print(u'  {0} {1}'.format(track['date'], track['title'])\
+                              .encode('UTF-8'))
 
         tracks.append(track)
 
@@ -641,7 +642,7 @@ def getTracks(driver):
 
 def getUserData(driver):
     if FLAGS.verbose:
-        print 'ユーザデータを取得します。'
+        print('ユーザデータを取得します。')
 
     main_menu = findUniqueElementById(driver, u'main_menu')
     btn_home = findUniqueElementByXpath(
@@ -764,7 +765,7 @@ def main(argv):
         selectAime(driver)
         aime_id = getAimeId(driver)
         if FLAGS.verbose:
-            print 'Aime ID: {0}'.format(aime_id.encode('UTF-8'))
+            print('Aime ID: {0}'.format(aime_id.encode('UTF-8')))
         tracks = getTracks(driver)
         user_data = getUserData(driver)
         user_data['aime_id'] = aime_id
